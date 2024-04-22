@@ -1,0 +1,26 @@
+path: brand_dataset # dataset root dir
+train: images/train  # train images (relative to 'path') 4 images
+val: images/val  # val images (relative to 'path') 4 images
+test:  # test images (optional)
+
+names:
+  0: KitchenAid
+  1: LG
+  2: Samsung
+  3: Whirlpool
+  4: Toshiba
+  5: Miele
+  6: Logitech
+  7: Panasonic
+  8: Electrolux
+  9: Sony
+  10: Morphy Richards
+  11: Sharp
+  12: Philips
+  13: Oppo
+  14: MSI
+  15: IFB
+  16: Huawei
+  17: Havells
+  18: Haier
+  19: Acer
