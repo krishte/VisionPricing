@@ -10,6 +10,7 @@ scikit-image = "*"
 scikit-learn = "*"
 matplotlib = "*"
 pillow = "*"
+albumentations = "*"
 
 [dev-packages]
 
