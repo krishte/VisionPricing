@@ -26,10 +26,11 @@ import matplotlib.pyplot as plt
 
 ### Pipeline for using models
 
-image_path = "test_images/logi_test.png"
+image_path = "test_images/mice.jpg"
 
 object_indices = {72.: "refrigerator", 62.: "tv", 63.: "laptop", 64.: "mouse", 65.: "remote", 66.: "keyboard", 67.: "cell phone", 68.: "microwave", 69.: "oven", 70: "toaster", 78: "hair drier"}
-brand_indices = {0: 'KitchenAid', 1: 'LG', 2: 'Samsung', 3: 'Whirlpool', 4: 'Toshiba', 5: 'Miele', 6: 'Logitech', 7: 'Panasonic', 8: 'Electrolux', 9: 'Sony', 10: 'Morphy Richards', 11: 'Sharp', 12: 'Philips', 13: 'Oppo', 14: 'MSI', 15: 'IFB', 16: 'Huawei', 17: 'Havells', 18: 'Haier', 19: 'Acer'}
+brand_indices = {0: 'KitchenAid', 1: 'LG', 2: 'Samsung', 3: 'Whirlpool', 4: 'Toshiba', 5: 'Miele', 6: 'Logitech', 7: 'Panasonic', 8: 'Electrolux', 9: 'Sony', 10: 'Morphy Richards', 11: 'Sharp', 12: 'Philips', 13: 'Oppo', 14: 'MSI', 15: 'IFB', 16: 'Huawei', 17: 'Havells', 18: 'Haier', 19: 'Acer', 20: "Apple", 21: "Asus", 22: "Bosch", 23: "Corsair", 24: "Dell", 25: "HP", 26: "Nespresso", 27: "Razer", 28: "Russell Hobbs", 29: "Vivo"}
+
 object_specific_models = {"refrigerator": "runs/classify/train3/weights/best.pt", "mouse":"runs/classify/mouse_wired/weights/best.pt" }
 products = []
 
@@ -44,7 +45,7 @@ rgb_to_text = [("black", (0,0,0)), ("white", (255, 255,255)),
                ("brown", (165, 42, 42)), ("pink", (255, 192, 203))]
 
 object_model = YOLO('runs/detect/train/weights/best.pt')
-brand_model = YOLO('runs/detect/train12/weights/best.pt')
+brand_model = YOLO('runs/detect/logo_detector3/weights/best.pt')
 
 object_results = object_model(image_path)
 #object_frame = object_results[0].plot()

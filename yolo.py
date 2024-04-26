@@ -4,6 +4,15 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 
+import torch
+
+device = "0" if torch.cuda.is_available() else "cpu"
+if device == "0":
+    torch.cuda.set_device(0)
+
+# print(torch.cuda.device_count())
+# print(torch.cuda.is_available())
+
 # brand model:
 # train6: LG + KitchenAid
 # train12: Tejas' 10
