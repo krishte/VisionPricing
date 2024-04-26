@@ -26,7 +26,7 @@ import matplotlib.pyplot as plt
 
 ### Pipeline for using models
 
-image_path = "test_images/mice.jpg"
+image_path = "test_images/laptops.jpg"
 
 object_indices = {72.: "refrigerator", 62.: "tv", 63.: "laptop", 64.: "mouse", 65.: "remote", 66.: "keyboard", 67.: "cell phone", 68.: "microwave", 69.: "oven", 70: "toaster", 78: "hair drier"}
 brand_indices = {0: 'KitchenAid', 1: 'LG', 2: 'Samsung', 3: 'Whirlpool', 4: 'Toshiba', 5: 'Miele', 6: 'Logitech', 7: 'Panasonic', 8: 'Electrolux', 9: 'Sony', 10: 'Morphy Richards', 11: 'Sharp', 12: 'Philips', 13: 'Oppo', 14: 'MSI', 15: 'IFB', 16: 'Huawei', 17: 'Havells', 18: 'Haier', 19: 'Acer', 20: "Apple", 21: "Asus", 22: "Bosch", 23: "Corsair", 24: "Dell", 25: "HP", 26: "Nespresso", 27: "Razer", 28: "Russell Hobbs", 29: "Vivo"}
@@ -50,13 +50,17 @@ brand_model = YOLO('runs/detect/logo_detector3/weights/best.pt')
 object_results = object_model(image_path)
 #object_frame = object_results[0].plot()
 
+
+
 classes_found = list(object_results[0].boxes.cls)
 image = cv2.imread(image_path)
 object_frame = cv2.imread(image_path)
 
-#Whether the intersection area of two boxes is > 0.3 of the area of either box
+#Whether the intersection area of two boxes is > 0.5 of the area of either box
 def intersecting_box(box1, box2):
     intersect_box = [max(box1[0], box2[0]), max(box1[1], box2[1]), min(box1[2], box2[2]), min(box1[3], box2[3])]
+    if intersect_box[3]-intersect_box[1] < 0 or intersect_box[2]-intersect_box[0] < 0:
+        return False
     area_intersect_box = (intersect_box[3]-intersect_box[1])*(intersect_box[2]-intersect_box[0])
     area_box1 = (box1[3]-box1[1])*(box1[2]-box1[0])
     area_box2 = (box2[3] - box2[1])*(box2[2]-box2[0])
@@ -90,9 +94,9 @@ for index, item in object_indices.items():
             # Blue border for object detected
             object_frame = cv2.rectangle(object_frame, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), (255, 0, 0), thickness=5) 
             # Blue background for object label
-            object_frame = cv2.rectangle(object_frame, (int(box[0]), int(box[3])), (int(box[0]+1200), int(box[3])-90) , (255, 0, 0), -1)
+            object_frame = cv2.rectangle(object_frame, (int(box[0]), int(box[3])), (int(box[0]+300), int(box[3])-30) , (255, 0, 0), -1)
             # Object label
-            object_frame = cv2.putText(object_frame, item + ": " + format(prob, ".2f")  , (int(box[0]), int(box[3])-5), cv2.FONT_HERSHEY_SIMPLEX ,  3, (255, 255, 255), 5) 
+            object_frame = cv2.putText(object_frame, item + ": " + format(prob, ".2f")  , (int(box[0]), int(box[3])-5), cv2.FONT_HERSHEY_SIMPLEX ,  1, (255, 255, 255), 3) 
             cropped_image =  image[int(box[1]):int(box[3]), int(box[0]):int(box[2])]
 
             # checking if there is an object specific model and setting type using cropped image
@@ -114,9 +118,9 @@ for index, item in object_indices.items():
                 # Green border for logo detected
                 object_frame = cv2.rectangle(object_frame, (int(logo_box[0]+box[0]), int(logo_box[1]+box[1])), (int(logo_box[2]+box[0]), int(logo_box[3]+box[1])), (17, 120, 10), thickness=5) 
                 # Green background for logo label
-                object_frame = cv2.rectangle(object_frame, (int(logo_box[0]+box[0]), int(logo_box[1]+box[1])), (int(logo_box[0]+box[0]+1200), int(logo_box[1]+box[1]-90)) , (17, 120, 10), -1)
+                object_frame = cv2.rectangle(object_frame, (int(logo_box[0]+box[0]), int(logo_box[1]+box[1])), (int(logo_box[0]+box[0]+300), int(logo_box[1]+box[1]-30)) , (17, 120, 10), -1)
                 # logo label
-                object_frame = cv2.putText(object_frame, brand_indices[int(brand_index)] + ": " + format(np.array(brand_results[0].boxes.conf)[0], ".2f")  , (int(logo_box[0]+box[0]), int(logo_box[1]+box[1])-5), cv2.FONT_HERSHEY_SIMPLEX ,  3, (255, 255, 255), 5) 
+                object_frame = cv2.putText(object_frame, brand_indices[int(brand_index)] + ": " + format(np.array(brand_results[0].boxes.conf)[0], ".2f")  , (int(logo_box[0]+box[0]), int(logo_box[1]+box[1])-5), cv2.FONT_HERSHEY_SIMPLEX ,  1, (255, 255, 255), 3) 
                 break
 
 
