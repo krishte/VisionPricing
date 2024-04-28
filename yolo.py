@@ -4,6 +4,9 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 
+# from wandb.integration.ultralytics import add_wandb_callback
+# import wandb
+
 import torch
 
 
@@ -21,15 +24,18 @@ def main():
     #Object model:
     # train: Coco128
 
+    # Step 1: Initialize a Weights & Biases run
+    # wandb.init(project="oxford_group_project", job_type="training", name="run2")
 
     # Create a new YOLO model from scratch
     model = YOLO('yolov8n.pt')
+    # add_wandb_callback(model, enable_model_checkpointing=True)
 
     # Load a pretrained YOLO model (recommended for training)
     # brand_model = YOLO('runs/detect/train6/weights/best.pt')
     #object_model = YOLO('runs/detect/train/weights/best.pt')
     # Train the model using the 'coco128.yaml' dataset for 3 epochs
-    results = model.train(data='brand_dataset.yaml', epochs=100, name="logo_detector" )
+    results = model.train(project="oxford_group_project", data='brand_dataset.yaml', epochs=100, name="logo_detector" )
 
     # # Evaluate the model's performance on the validation set
     results = model.val()
@@ -39,6 +45,8 @@ def main():
 
     # Export the model to ONNX format
     model.export(format='onnx')
+
+    # wandb.finish()
 
     # test_image = "datasets/fridge_type/train/bottom_freezer/bf_1.jpg"
 

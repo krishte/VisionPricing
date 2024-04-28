@@ -45,14 +45,15 @@ rgb_to_text = [("black", (0,0,0)), ("white", (255, 255,255)),
                ("brown", (165, 42, 42)), ("pink", (255, 192, 203))]
 
 object_model = YOLO('runs/detect/train/weights/best.pt')
-brand_model = YOLO('runs/detect/logo_detector3/weights/best.pt')
+# brand_model = YOLO('runs/detect/logo_detector4/weights/best.pt')
+brand_model = YOLO('oxford_group_project/logo_detector/weights/best.pt')
 
 object_results = object_model(image_path)
 #object_frame = object_results[0].plot()
 
 
 
-classes_found = list(object_results[0].boxes.cls)
+classes_found = list(object_results[0].boxes.cls.cpu())
 image = cv2.imread(image_path)
 object_frame = cv2.imread(image_path)
 
@@ -71,8 +72,8 @@ for index, item in object_indices.items():
     if index in classes_found:
         #boxes and confidences for all objects with the right index
         classes_found_indices = [i for (i, val) in enumerate(np.array(classes_found)) if val==index]
-        boxes = np.array(object_results[0].boxes.xyxy)[classes_found_indices]
-        probs = np.array(object_results[0].boxes.conf)[classes_found_indices]
+        boxes = np.array(object_results[0].boxes.xyxy.cpu())[classes_found_indices]
+        probs = np.array(object_results[0].boxes.conf.cpu())[classes_found_indices]
         nonintersecting_boxes, nonintersecting_probs = [], []
 
         for j,val in enumerate(boxes):
@@ -106,7 +107,7 @@ for index, item in object_indices.items():
                 # Black background for classes
                 #object_frame = cv2.rectangle(object_frame, (0,0), (250, 30+25*len(np.array(object_specific_results[0].probs.data))) , (0, 0, 0), -1)
                 #object_frame = object_specific_results[0].plot(img=object_frame)
-                product_description['type'] = " ".join(object_specific_results[0].names[np.argmax(np.array(object_specific_results[0].probs.data))].split('_'))
+                product_description['type'] = " ".join(object_specific_results[0].names[np.argmax(np.array(object_specific_results[0].probs.data.cpu()))].split('_'))
             
             
             # Finding the brand of the product
@@ -114,13 +115,13 @@ for index, item in object_indices.items():
             #object_frame = brand_results[0].plot(img=object_frame)
             for brand_index in list(brand_results[0].boxes.cls):
                 product_description['brand'] = brand_indices[int(brand_index)]
-                logo_box = np.array(brand_results[0].boxes.xyxy)[0]
+                logo_box = np.array(brand_results[0].boxes.xyxy.cpu())[0]
                 # Green border for logo detected
                 object_frame = cv2.rectangle(object_frame, (int(logo_box[0]+box[0]), int(logo_box[1]+box[1])), (int(logo_box[2]+box[0]), int(logo_box[3]+box[1])), (17, 120, 10), thickness=5) 
                 # Green background for logo label
                 object_frame = cv2.rectangle(object_frame, (int(logo_box[0]+box[0]), int(logo_box[1]+box[1])), (int(logo_box[0]+box[0]+300), int(logo_box[1]+box[1]-30)) , (17, 120, 10), -1)
                 # logo label
-                object_frame = cv2.putText(object_frame, brand_indices[int(brand_index)] + ": " + format(np.array(brand_results[0].boxes.conf)[0], ".2f")  , (int(logo_box[0]+box[0]), int(logo_box[1]+box[1])-5), cv2.FONT_HERSHEY_SIMPLEX ,  1, (255, 255, 255), 3) 
+                object_frame = cv2.putText(object_frame, brand_indices[int(brand_index)] + ": " + format(np.array(brand_results[0].boxes.conf.cpu())[0], ".2f")  , (int(logo_box[0]+box[0]), int(logo_box[1]+box[1])-5), cv2.FONT_HERSHEY_SIMPLEX ,  1, (255, 255, 255), 3) 
                 break
 
 
