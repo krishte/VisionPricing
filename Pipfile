@@ -11,6 +11,12 @@ scikit-learn = "*"
 matplotlib = "*"
 pillow = "*"
 albumentations = "*"
+pytesseract = "*"
+nltk = "*"
+transformers = "*"
+datasets = "*"
+evaluate = "*"
+jiwer = "*"
 
 [dev-packages]
 
