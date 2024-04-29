@@ -6,7 +6,9 @@ import numpy as np
 from sklearn.cluster import KMeans
 from statistics import mode
 import matplotlib.pyplot as plt
-
+import pytesseract
+import nltk
+from transformers import BlipProcessor, BlipForConditionalGeneration
 # brand model:
 # detect/train6: LG + KitchenAid
 # detect/train12: Tejas' 10
@@ -26,7 +28,19 @@ import matplotlib.pyplot as plt
 
 ### Pipeline for using models
 
-image_path = "test_images/laptops.jpg"
+image_path = "test_images/mice.jpg"
+
+blip_processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
+
+def image_captioner(image) -> str:
+    """Provides information about the image"""
+    raw_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    inputs = blip_processor(raw_image, return_tensors="pt")
+    out = blip_model.generate(**inputs)
+    return blip_processor.decode(out[0], skip_special_tokens=True)
+
+
 
 object_indices = {72.: "refrigerator", 62.: "tv", 63.: "laptop", 64.: "mouse", 65.: "remote", 66.: "keyboard", 67.: "cell phone", 68.: "microwave", 69.: "oven", 70: "toaster", 78: "hair drier"}
 brand_indices = {0: 'KitchenAid', 1: 'LG', 2: 'Samsung', 3: 'Whirlpool', 4: 'Toshiba', 5: 'Miele', 6: 'Logitech', 7: 'Panasonic', 8: 'Electrolux', 9: 'Sony', 10: 'Morphy Richards', 11: 'Sharp', 12: 'Philips', 13: 'Oppo', 14: 'MSI', 15: 'IFB', 16: 'Huawei', 17: 'Havells', 18: 'Haier', 19: 'Acer', 20: "Apple", 21: "Asus", 22: "Bosch", 23: "Corsair", 24: "Dell", 25: "HP", 26: "Nespresso", 27: "Razer", 28: "Russell Hobbs", 29: "Vivo"}
@@ -56,6 +70,7 @@ classes_found = list(object_results[0].boxes.cls)
 image = cv2.imread(image_path)
 object_frame = cv2.imread(image_path)
 
+print(image_captioner(image))
 #Whether the intersection area of two boxes is > 0.5 of the area of either box
 def intersecting_box(box1, box2):
     intersect_box = [max(box1[0], box2[0]), max(box1[1], box2[1]), min(box1[2], box2[2]), min(box1[3], box2[3])]
@@ -65,6 +80,15 @@ def intersecting_box(box1, box2):
     area_box1 = (box1[3]-box1[1])*(box1[2]-box1[0])
     area_box2 = (box2[3] - box2[1])*(box2[2]-box2[0])
     return area_intersect_box > 0.5*area_box1 and area_intersect_box > 0.5*area_box2
+
+# get grayscale image
+def get_grayscale(image):
+    return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+# noise removal
+def remove_noise(image):
+    return cv2.medianBlur(image,5)# get grayscale image
+
 
 for index, item in object_indices.items():
     #select largest area box for overlapping boxes and corresponding confidence score
@@ -89,7 +113,7 @@ for index, item in object_indices.items():
                 nonintersecting_probs.append(probs[j])
 
         for box, prob in zip(nonintersecting_boxes, nonintersecting_probs):
-            product_description = {"product" : item, "brand": "", "type": "", "color": ""}
+            product_description = {"product" : item, "brand": "", "type": "", "color": "", "other": ""}
 
             # Blue border for object detected
             object_frame = cv2.rectangle(object_frame, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), (255, 0, 0), thickness=5) 
@@ -111,8 +135,11 @@ for index, item in object_indices.items():
             
             # Finding the brand of the product
             brand_results = brand_model(cropped_image)
+ 
+            
             #object_frame = brand_results[0].plot(img=object_frame)
             for brand_index in list(brand_results[0].boxes.cls):
+
                 product_description['brand'] = brand_indices[int(brand_index)]
                 logo_box = np.array(brand_results[0].boxes.xyxy)[0]
                 # Green border for logo detected
@@ -121,6 +148,22 @@ for index, item in object_indices.items():
                 object_frame = cv2.rectangle(object_frame, (int(logo_box[0]+box[0]), int(logo_box[1]+box[1])), (int(logo_box[0]+box[0]+300), int(logo_box[1]+box[1]-30)) , (17, 120, 10), -1)
                 # logo label
                 object_frame = cv2.putText(object_frame, brand_indices[int(brand_index)] + ": " + format(np.array(brand_results[0].boxes.conf)[0], ".2f")  , (int(logo_box[0]+box[0]), int(logo_box[1]+box[1])-5), cv2.FONT_HERSHEY_SIMPLEX ,  1, (255, 255, 255), 3) 
+
+
+                logo_image = (get_grayscale(cropped_image[int(logo_box[1]):int(logo_box[3]), int(logo_box[0]):int(logo_box[2])]))
+                custom_config = r'--oem 3 --psm 7'
+                brand_text = pytesseract.image_to_string(logo_image, config=custom_config)
+
+                print(brand_text)
+                brand_text = brand_text.replace("\n", "")
+  
+                if (not product_description['brand'] == 'Logitech' and nltk.edit_distance(product_description['brand'], brand_text) > 2 and len(brand_text) >= 4 and any(not c.isalnum() for c in brand_text)):
+                    #possible the brand has been detected incorrectly
+                    product_description['brand'] = brand_text.lower()
+                    
+
+
+                
                 break
 
 
@@ -129,11 +172,19 @@ for index, item in object_indices.items():
             cropped_image_rgb = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB)
             reshape = cropped_image_rgb.reshape((cropped_image_rgb.shape[0] * cropped_image_rgb.shape[1], 3))
 
-            cluster = KMeans(n_clusters=3).fit(reshape)
+            cluster = KMeans(n_clusters=5).fit(reshape)
 
             color = np.array(cluster.cluster_centers_[mode(cluster.labels_)])
             print(color)
             product_description['color'] = min([(np.linalg.norm(np.array(col)-color), name) for (name, col) in rgb_to_text])[1]
+
+            product_description['other'] = image_captioner(cropped_image)
+            desc = product_description['other'].split(' ')
+            if item in desc and any([(x in desc[:desc.index(item)]) for x in [y[0] for y in rgb_to_text]]):
+                product_description['color'] = [x for x in [y[0] for y in rgb_to_text] if x in desc[:desc.index(item)]][0]
+
+
+
             products.append(product_description)
 
 
