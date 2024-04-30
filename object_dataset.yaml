@@ -1,0 +1,15 @@
+path: extra_objects
+test: images/test
+train: images/train
+validation: images/validation
+
+
+names:
+  0: Headphones
+  1: Kettle
+  2: Washing machine
+  3: Printer
+  4: Toaster
+  5: Dishwasher
+  6: Blender
+
