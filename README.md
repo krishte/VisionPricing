@@ -1,4 +1,4 @@
-The following is an explanation of the various components of this repo.
+The following is an explanation of the various components of this repo. Progress, metrics and information on individual runs can be found on [the weights and biases dashboard](https://wandb.ai/eansengchang/oxford_group_project)
 
 ## Datasets
 This contains all datasets used for training classification and detection models. The **brand_dataset** contains all brand logo images and labels and **brand_dataset_augmented** is the former with random data augmentations applied. The **extra_objects** dataset is images for 6 classes of electronics products not included in the standard COCO dataset YOLO is trained on. For each object specific model that needs to be trained, there is an **object_specific_model** and a **object_specific_model_real**. The former contains all images downloaded from google and the latter contains the images cropped to just the relevenat object.
@@ -33,3 +33,12 @@ Performs the following augmentations 3 times on **brand_dataset** to quadruple d
 
 ## Pipenv
 I use pipenv for python package management, so downloading pipenv will make installing all required dependencies very easy. Everything is currently running on python 3.10.5
+
+## Using the GPU
+
+This was performed on windows using a rtx 4060
+
+- download [Nvidia Cuda Toolkit](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Windows&target_arch=x86_64&target_version=11&target_type=exe_network) version 11 and run installer
+- download [cudnn](https://developer.nvidia.com/rdp/cudnn-archive) for version 11 and copy and paste the files from **bin**, **include** and **lib** to the respective folders in the directory **C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8**
+- download [pytorch](https://pytorch.org/get-started/locally/) with cuda. My command was `pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118`
+- Run `python yolo.py` and make sure that GPU usage is output as true

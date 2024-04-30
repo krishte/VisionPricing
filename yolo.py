@@ -16,7 +16,7 @@ def main():
         torch.cuda.set_device(0)
 
     print(torch.cuda.device_count())
-    print(torch.cuda.is_available())
+    print("GPU usage:", torch.cuda.is_available())
     # brand model:
     # train6: LG + KitchenAid
     # train12: Tejas' 10
