@@ -28,5 +28,8 @@ A script for renaming all images into a standard format
 ## openimages_downloader.py
 Downloads the images and labels for the 6 extra object classes and converts the dataset to YOLO format into **datasets/extra_objects**
 
+## data_augmenter.py
+Performs the following augmentations 3 times on **brand_dataset** to quadruple dataset size: RandomScale, Rotate, BBoxSafeRandomCrop, HueSaturationValue, ISONoise, RandomBrightnessContrast
+
 ## Pipenv
 I use pipenv for python package management, so downloading pipenv will make installing all required dependencies very easy. Everything is currently running on python 3.10.5
