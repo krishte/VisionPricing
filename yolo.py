@@ -4,8 +4,8 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 
-# from wandb.integration.ultralytics import add_wandb_callback
-# import wandb
+import wandb
+from wandb.integration.ultralytics import add_wandb_callback
 
 import torch
 
@@ -25,10 +25,10 @@ def main():
     # train: Coco128
 
     # Step 1: Initialize a Weights & Biases run
-    # wandb.init(project="oxford_group_project", job_type="training", name="run2")
+    # wandb.init(project="oxford_group_project", job_type="training", name="logo_detector2")
 
     # Create a new YOLO model from scratch
-    model = YOLO('yolov8n.pt')
+    model = YOLO('yolov8s.pt')
     # add_wandb_callback(model, enable_model_checkpointing=True)
 
     # Load a pretrained YOLO model (recommended for training)

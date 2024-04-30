@@ -14,13 +14,13 @@ transform = A.Compose([
         
     ], bbox_params=A.BboxParams(format='yolo', label_fields=['class_labels']))
 
-path = "datasets/brand_dataset_augmented/labels/train"
+path = "datasets/igor/labels"
 onlyfiles = [f for f in listdir(path)]
-images = [f for f in listdir("datasets/brand_dataset_augmented/images/train")]
+images = [f for f in listdir("datasets/igor/images")]
 images_without_filetype = [f.split('.')[0] for f in images]
 
-# augment 3 more times
-for j in range(2, 5):
+# augment 4 times
+for j in range(1, 5):
     for filename in onlyfiles:
         if "augmented" in filename:
             continue
@@ -32,7 +32,7 @@ for j in range(2, 5):
             lines = data.split('\n')
             boxes = [[max(float(x), 0.000001) for x in line.split(' ')[1:]] for line in lines]
             classes = [int(line.split(' ')[0]) for line in lines]
-            image = cv2.imread("datasets/brand_dataset_augmented/images/train/" + images[images_without_filetype.index(filename.split('.')[0])])
+            image = cv2.imread("datasets/igor/images/" + images[images_without_filetype.index(filename.split('.')[0])])
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             print(boxes)
 
@@ -48,6 +48,6 @@ for j in range(2, 5):
                 new_lines.append(temp)
 
             new_data = '\n'.join(new_lines)
-            with open('{}'.format("datasets/brand_dataset_augmented/labels/train/" + filename.split('.')[0] + "_augmented" + str(j) + ".txt"), 'w+') as file:
+            with open('{}'.format("datasets/igor/labels/" + filename.split('.')[0] + "_augmented" + str(j) + ".txt"), 'w+') as file:
                 file.write(new_data)
-            cv2.imwrite("datasets/brand_dataset_augmented/images/train/" + filename.split('.')[0] + "_augmented" + str(j) + ".png", transformed_image)
+            cv2.imwrite("datasets/igor/images/" + filename.split('.')[0] + "_augmented" + str(j) + ".png", transformed_image)

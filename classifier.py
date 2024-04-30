@@ -43,7 +43,11 @@ def image_captioner(image) -> str:
 
 
 object_indices = {72.: "refrigerator", 62.: "tv", 63.: "laptop", 64.: "mouse", 65.: "remote", 66.: "keyboard", 67.: "cell phone", 68.: "microwave", 69.: "oven", 70: "toaster", 78: "hair drier"}
-brand_indices = {0: 'KitchenAid', 1: 'LG', 2: 'Samsung', 3: 'Whirlpool', 4: 'Toshiba', 5: 'Miele', 6: 'Logitech', 7: 'Panasonic', 8: 'Electrolux', 9: 'Sony', 10: 'Morphy Richards', 11: 'Sharp', 12: 'Philips', 13: 'Oppo', 14: 'MSI', 15: 'IFB', 16: 'Huawei', 17: 'Havells', 18: 'Haier', 19: 'Acer', 20: "Apple", 21: "Asus", 22: "Bosch", 23: "Corsair", 24: "Dell", 25: "HP", 26: "Nespresso", 27: "Razer", 28: "Russell Hobbs", 29: "Vivo"}
+brand_indices = {0: 'KitchenAid', 1: 'LG', 2: 'Samsung', 3: 'Whirlpool', 4: 'Toshiba', 5: 'Miele', 6: 'Logitech', 7: 'Panasonic', 
+                 8: 'Electrolux', 9: 'Sony', 10: 'Morphy Richards', 11: 'Sharp', 12: 'Philips', 13: 'Oppo', 14: 'MSI', 15: 'IFB', 
+                 16: 'Huawei', 17: 'Havells', 18: 'Haier', 19: 'Acer', 20: "Apple", 21: "Asus", 22: "Bosch", 23: "Corsair", 24: "Dell", 
+                 25: "HP", 26: "Nespresso", 27: "Razer", 28: "Russell Hobbs", 29: "Vivo", 30: "Babyliss",  31: "Siemens",  32: "Xiaomi",  
+                 33: "Breville",  34: "Liebherr",  35: "Nokia",  36: "Lenovo",  37: "Kenwood",  38: "Motorola",  39: "Hamilton Beach"}
 
 object_specific_models = {"refrigerator": "runs/classify/train3/weights/best.pt", "mouse":"runs/classify/mouse_wired/weights/best.pt" }
 products = []
