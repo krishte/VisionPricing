@@ -11,21 +11,21 @@ import numpy as np
 
 ### Shift all the label values in a YOLO dataset
 
-# path = "cringe_better"
-# onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
+path = "datasets/aleksa/labels"
+onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]
 
-# for filename in onlyfiles:
-#     data = None
-#     with open('{}'.format(path + "/" + filename), 'r') as file:
-#         data = file.read()
-#         lines = data.split('\n')
-#         for i, line in enumerate(lines):
-#             ints = line.split(' ')
-#             ints[0] = str(int(ints[0])+10)
-#             lines[i] = ' '.join(ints)
-#         new_data = '\n'.join(lines)
-#         with open('{}'.format(path + "/" + filename), 'w') as file:
-#             file.write(new_data)
+for filename in onlyfiles:
+    data = None
+    with open('{}'.format(path + "/" + filename), 'r') as file:
+        data = file.read()
+        lines = data.split('\n')
+        for i, line in enumerate(lines):
+            ints = line.split(' ')
+            ints[0] = str(int(ints[0])+40)
+            lines[i] = ' '.join(ints)
+        new_data = '\n'.join(lines)
+        with open('{}'.format(path + "/" + filename), 'w') as file:
+            file.write(new_data)
 
 ### Data preprocessing: cropping object images to object
 
@@ -67,14 +67,14 @@ import numpy as np
 
 ### Convert webp to png 
 
-path = "images"
+# path = "images"
 
 # only_folders = [f for f in listdir(path)]
 
 # for folder in only_folders:
-only_files = [f for f in listdir(path)]
-for filename in only_files:
-    if (filename.split('.')[-1] == 'webp'):
-        im = Image.open(path + "/" + filename).convert('RGB')
-        im.save(path + '/' + filename.split('.')[0] + ".png", "png")
-        os.remove(path + "/" + filename)
+# only_files = [f for f in listdir(path)]
+# for filename in only_files:
+#     if (filename.split('.')[-1] == 'webp'):
+#         im = Image.open(path + "/" + filename).convert('RGB')
+#         im.save(path + '/' + filename.split('.')[0] + ".png", "png")
+#         os.remove(path + "/" + filename)

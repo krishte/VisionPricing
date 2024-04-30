@@ -18,10 +18,10 @@ def replace_first_number_with_offset(filename, offset):
                 file.write(modified_content)
             print(f"Modified {filename}: Replaced {original_number} with {new_number}")
 
-folder_path = 'datasets/igor/labels_igor'
+folder_path = 'datasets/aleksa/labels'
 
 # Offset to add to the first number
-offset = 30
+offset = 40
 
 # Iterate over all files in the folder
 for filename in os.listdir(folder_path):

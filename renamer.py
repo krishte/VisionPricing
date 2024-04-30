@@ -1,6 +1,6 @@
 import os
 
-directory = 'PATH TO FILES'
+directory = 'datasets/aleksa/labels/'
 
 for name in os.listdir(directory):
     filename = name.split(".")[0]

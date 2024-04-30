@@ -35,6 +35,7 @@ def main():
     # brand_model = YOLO('runs/detect/train6/weights/best.pt')
     #object_model = YOLO('runs/detect/train/weights/best.pt')
     # Train the model using the 'coco128.yaml' dataset for 3 epochs
+
     results = model.train(project="oxford_group_project", data='brand_dataset.yaml', epochs=100, name="logo_detector" )
 
     # # Evaluate the model's performance on the validation set
