@@ -28,7 +28,7 @@ def main():
     # wandb.init(project="oxford_group_project", job_type="training", name="logo_detector2")
 
     # Create a new YOLO model from scratch
-    model = YOLO('yolov8s.pt')
+    model = YOLO('yolov8n.pt')
     # add_wandb_callback(model, enable_model_checkpointing=True)
 
     # Load a pretrained YOLO model (recommended for training)
@@ -36,7 +36,7 @@ def main():
     #object_model = YOLO('runs/detect/train/weights/best.pt')
     # Train the model using the 'coco128.yaml' dataset for 3 epochs
 
-    results = model.train(project="oxford_group_project", data='brand_dataset.yaml', epochs=100, name="logo_detector" )
+    results = model.train(project="oxford_group_project", data='brand_dataset.yaml', epochs=100, name="logo_detector4.1n" )
 
     # # Evaluate the model's performance on the validation set
     results = model.val()
